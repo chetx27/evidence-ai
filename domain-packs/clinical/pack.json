@@ -1,0 +1,60 @@
+{
+  "pack_id": "clinical",
+  "version": "0.1.0",
+  "status": "gate1-fixture-pack",
+  "description": "Declarative clinical pack used by the Gate 1 slice. Extraction coverage is the EB-Synth v0 frame list, not a general clinical NLP model.",
+  "languages_implemented": ["en"],
+  "languages_planned": ["hi", "kn"],
+  "source_priors_applied": false,
+  "source_priors_note": "No reliability priors are shipped. Estimates are not yet measured.",
+  "predicates": [
+    {
+      "id": "sample_size",
+      "functionality": "single_valued",
+      "value_type": "quantity",
+      "dimension": "count",
+      "extractor": "clinical_pattern_v0"
+    },
+    {
+      "id": "hazard_ratio",
+      "functionality": "single_valued",
+      "value_type": "quantity",
+      "dimension": "ratio",
+      "extractor": "clinical_pattern_v0"
+    },
+    {
+      "id": "hba1c_change",
+      "functionality": "single_valued",
+      "value_type": "quantity",
+      "dimension": "percent",
+      "extractor": "clinical_pattern_v0"
+    },
+    {
+      "id": "all_cause_mortality",
+      "functionality": "single_valued",
+      "value_type": "quantity",
+      "dimension": "count",
+      "extractor": null,
+      "note": "Ontology slot only. No extractor is registered in pack 0.1.0."
+    }
+  ],
+  "expected_slots_by_doc_type": {
+    "registry": ["sample_size"],
+    "protocol": ["sample_size"],
+    "publication": ["sample_size", "hazard_ratio", "hba1c_change"],
+    "press_release": ["sample_size", "hazard_ratio", "hba1c_change"],
+    "regulatory_summary": ["sample_size", "hazard_ratio", "hba1c_change"]
+  },
+  "contradiction_types_implemented": ["numeric_mismatch"],
+  "numeric_subtypes": [
+    "equivalent",
+    "scale_resolved",
+    "rounding_resolved",
+    "incompatible_values",
+    "valid_time_unknown",
+    "temporal_non_overlap",
+    "not_comparable",
+    "surface_equal",
+    "surface_string_mismatch"
+  ]
+}

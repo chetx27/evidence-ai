@@ -1,0 +1,38 @@
+{
+  "id": "prereg-ebsynth-v0-numeric",
+  "status": "registered-before-measurement",
+  "fixture": "EB-Synth-v0",
+  "fixture_role": "Development fixture and Gate 1 acceptance corpus. Not a hidden test set. A score on this fixture is not a generalization claim.",
+  "corpus_label": "synthetic",
+  "registered_seed": 20261126,
+  "seed_policy": "Specification-fixed. The generator does not use a random number generator. Any other seed is refused so a different seed cannot label an identical corpus.",
+  "positive_class": "incompatible_values",
+  "headline_metric": "false_conflict_rate",
+  "false_conflict_rate_definition": "FP/(FP+TN) where the positive prediction is subtype incompatible_values and the negative class is a pair whose fixture latent values are equal.",
+  "recall_definition": "TP/(TP+FN) on pairs whose fixture latent values differ.",
+  "precision_definition": "TP/(TP+FP) on predictions of incompatible_values.",
+  "pair_inclusion": "Aligned extracted claims that share a trial and a predicate, come from different documents, and have valid-time relation overlap.",
+  "excluded_from_headline": [
+    "valid_time_unknown",
+    "temporal_non_overlap",
+    "pairs in which either assertion was not extracted"
+  ],
+  "ratio_rounding_abs": "0.005",
+  "percent_rounding_abs": "0.05",
+  "count_rule": "exact equality after scale normalization",
+  "scale_rules": {
+    "count_thousand": "multiply the surface token by 1000 and compare as count",
+    "fraction": "multiply the surface token by 100 and compare as percent"
+  },
+  "methods": ["numeric_rule_v0", "surface_string_baseline"],
+  "directional_expectation": "On this fixture, numeric_rule_v0 false_conflict_rate is lower than surface_string_baseline false_conflict_rate, and numeric_rule_v0 recall is greater than or equal to baseline recall.",
+  "intentional_rule_false_positive": "The fixture contains at least one latent-equal hazard_ratio pair whose absolute difference exceeds ratio_rounding_abs. A run that reports zero numeric_rule_v0 false positives is a deviation from this registration.",
+  "statistical_test": "None. The fixture is a census of a fixed specification. No p-value is computed.",
+  "trained_component_seeds": "Not applicable. No component is trained.",
+  "llm_only_baseline": "Not run. No model endpoint is configured, the mode is open-weights only, and no weights are installed.",
+  "registered_questions": [
+    "What sample size was reported for SYNTH-001?",
+    "What sample size was reported for SYNTH-005?",
+    "What all-cause mortality count was reported for SYNTH-001?"
+  ]
+}
