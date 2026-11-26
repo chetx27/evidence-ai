@@ -98,7 +98,8 @@ class Database:
         self.conn.execute(
             """
             INSERT INTO events (
-              event_id, event_type, system_time, schema_version, correlation_id, object_id, payload_json
+              event_id, event_type, system_time, schema_version,
+              correlation_id, object_id, payload_json
             ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (

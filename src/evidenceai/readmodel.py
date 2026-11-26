@@ -127,7 +127,8 @@ def rule_conflicts(conn: sqlite3.Connection) -> list[dict[str, Any]]:
         conn,
         """
         SELECT a.*,
-               cl.trial_id, cl.predicate, cl.raw_token AS raw_token_a, cl.canonical_value AS canonical_a,
+               cl.trial_id, cl.predicate, cl.raw_token AS raw_token_a,
+               cl.canonical_value AS canonical_a,
                cr.raw_token AS raw_token_b, cr.canonical_value AS canonical_b
         FROM pair_assessments a
         JOIN claims cl ON cl.claim_id = a.claim_id_a

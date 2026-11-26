@@ -17,11 +17,16 @@ Present in this commit:
 - A quotation check that accepts a factual sentence only when the sentence is the cited span.
 - Clinical domain pack `0.1.0`. Source reliability priors are not applied. Hindi and Kannada are named as planned languages and are not implemented.
 
+Present as of the pipeline commit:
+
+- `evidenceai.cli slice` builds the corpus, the event log, the graph projection, and the three registered answers.
+- `evidenceai.cli harness` scores that database and writes `eval/logs/gate1.json`. The numbers in that file are the run. This README does not copy them.
+- Tests in `tests/` cover unit normalization, the quotation check, quarantine, exact-byte duplicates, unsupported language, the 50-document slice, idempotent replay, and assertion-time filtering.
+
 Later Gate 1 work, absent from this commit:
 
-- `evidenceai.cli`, the HTTP service, the interface, the test suite, and CI.
-- A logged harness report. `make slice`, `make harness`, `make serve`, `make ui`, and `make ci` name those entrypoints. Running them fails until those files exist.
-- `python -m evidenceai` imports `evidenceai.cli`, which is not in the tree.
+- The HTTP service, the interface, and CI.
+- `make serve`, `make ui`, and `make ci` name those entrypoints. They fail until the server, the frontend, and the workflow exist.
 - Research charter, architecture decision records, and the semantics document.
 - PDF, OCR, learned extractors, entity-resolution models, and any non-English corpus.
 
@@ -89,15 +94,16 @@ Import check:
 python -c "import evidenceai; print(evidenceai.__version__)"
 ```
 
-That prints `0.1.0`. It does not run a corpus.
+That prints `0.1.0`.
 
-Generate the fixture only (writes text files, does not open the database):
+Run the slice and the fixture diagnostic:
 
 ```bash
-python -c "from pathlib import Path; from evidenceai.synth import generate_corpus; print(generate_corpus(Path('data/slice/corpus'))['document_count'])"
+python -m evidenceai.cli slice --out data/slice
+python -m evidenceai.cli harness --db data/slice/evidence.db --out eval/logs/gate1.json
 ```
 
-`data/` is gitignored. The printed document count is the generator's own manifest field for that call.
+`make test` lints and runs pytest. `make slice` and `make harness` are the same two commands. `data/` is gitignored. The harness JSON is the logged result for that working tree.
 
 ## Models and deployment
 

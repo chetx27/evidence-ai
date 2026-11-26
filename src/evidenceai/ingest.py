@@ -133,7 +133,10 @@ def ingest_file(
         target.write_bytes(data)
     existing = one(
         db.conn,
-        "SELECT document_version_id FROM document_versions WHERE content_hash = ? ORDER BY version_index",
+        """
+        SELECT document_version_id FROM document_versions
+        WHERE content_hash = ? ORDER BY version_index
+        """,
         (digest,),
     )
     observation_id = stable_id("obs", relative, digest)
@@ -190,7 +193,12 @@ def ingest_file(
         warnings.append("trial_id_missing")
     external_key = Path(relative).stem
     document_id = stable_id("doc", external_key)
-    if one(db.conn, "SELECT document_id FROM documents WHERE document_id = ?", (document_id,)) is None:
+    existing_document = one(
+        db.conn,
+        "SELECT document_id FROM documents WHERE document_id = ?",
+        (document_id,),
+    )
+    if existing_document is None:
         db.append(
             "document_recorded",
             document_id,

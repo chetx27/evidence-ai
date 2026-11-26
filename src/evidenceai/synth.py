@@ -96,7 +96,9 @@ def build_trials() -> tuple[TrialSpec, ...]:
     a1 = _a1c("-1.2")
 
     n2 = _n("180")
-    n2["press_release"] = ClaimSpec("press_release", "sample_size", "0.180", "count_thousand", "180")
+    n2["press_release"] = ClaimSpec(
+        "press_release", "sample_size", "0.180", "count_thousand", "180"
+    )
     hr2 = _hr("0.81")
     a2 = _a1c("-0.8")
 
@@ -193,7 +195,8 @@ def _frame_for(spec: ClaimSpec):
     ]
     if len(matches) != 1:
         raise RuntimeError(
-            f"Expected one frame for {spec.doc_type} {spec.predicate} {spec.unit_kind}, found {len(matches)}."
+            "Expected one frame for "
+            f"{spec.doc_type} {spec.predicate} {spec.unit_kind}, found {len(matches)}."
         )
     return matches[0]
 
@@ -259,7 +262,9 @@ def generate_corpus(corpus_dir: Path) -> dict[str, object]:
             quantity = normalize(spec.token, spec.unit_kind)
             assertions.append(
                 {
-                    "assertion_id": stable_id("as", key, spec.predicate, spec.token, spec.unit_kind),
+                    "assertion_id": stable_id(
+                        "as", key, spec.predicate, spec.token, spec.unit_kind
+                    ),
                     "doc_key": key,
                     "trial_id": trial.trial_id,
                     "doc_type": spec.doc_type,

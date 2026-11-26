@@ -16,8 +16,8 @@ from evidenceai.pack import load_pack, predicate_record
 from evidenceai.readmodel import (
     artifact,
     assessments_for_claims,
-    latest_versions,
     latest_claims,
+    latest_versions,
     span,
 )
 from evidenceai.verify import verify_quotation
@@ -100,8 +100,12 @@ def build_answer(
             persisted=persisted,
             assertion_time_lte=assertion_time_lte,
             limitations=limitations,
-            what_would_change="Ingesting a document that names this trial id would make it examinable.",
-            system_notes=["The trial id is not on any ingested document. This is not a claim about the world."],
+            what_would_change=(
+                "Ingesting a document that names this trial id would make it examinable."
+            ),
+            system_notes=[
+                "The trial id is not on any ingested document. This is not a claim about the world."
+            ],
         )
     examined, unknown_time = _select_versions(versions, assertion_time_lte)
     claims = [
@@ -160,7 +164,8 @@ def build_answer(
     if state == "contradicted":
         change = (
             "The state would change if every incompatible pair were removed, superseded, "
-            "or reclassified. Gate 1 does not record reviewer decisions and does not select a value."
+            "or reclassified. Gate 1 does not record reviewer decisions and does not "
+            "select a value."
         )
     else:
         change = (
@@ -210,7 +215,10 @@ def _select_versions(
     return examined, unknown
 
 
-def _examined_view(versions: list[dict[str, Any]], claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _examined_view(
+    versions: list[dict[str, Any]],
+    claims: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     claimed = {row["document_id"] for row in claims}
     return [
         {

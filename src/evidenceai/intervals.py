@@ -22,7 +22,12 @@ def overlaps(left: Interval, right: Interval) -> bool:
     return left.start <= right.end and right.start <= left.end
 
 
-def relation(left_start: str | None, left_end: str | None, right_start: str | None, right_end: str | None) -> str:
+def relation(
+    left_start: str | None,
+    left_end: str | None,
+    right_start: str | None,
+    right_end: str | None,
+) -> str:
     if not left_start or not left_end or not right_start or not right_end:
         return "unknown"
     left = Interval(parse_date(left_start), parse_date(left_end))

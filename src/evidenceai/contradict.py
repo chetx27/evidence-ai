@@ -132,7 +132,9 @@ def _baseline(left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
             "valid_time_relation": time_relation,
             "abs_difference": None,
             "tolerance": None,
-            "rationale": "Surface numeric tokens are identical. Scale and rounding are ignored by design.",
+            "rationale": (
+                "Surface numeric tokens are identical. Scale and rounding are ignored by design."
+            ),
         }
     return {
         "subtype": "surface_string_mismatch",
