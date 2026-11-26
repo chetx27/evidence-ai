@@ -1,0 +1,44 @@
+[project]
+name = "evidenceai"
+version = "0.1.0"
+description = "Claim-centric evidence graph. Gate 1 is a tested vertical slice on a synthetic clinical fixture."
+requires-python = ">=3.9"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "fastapi>=0.110,<0.116",
+  "uvicorn>=0.27,<0.33",
+  "pydantic>=2.6,<2.11",
+  "jsonschema>=4.21,<4.24",
+  "httpx>=0.27,<0.28",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<8.4",
+  "hypothesis>=6.100,<6.120",
+  "ruff>=0.6,<0.8",
+]
+
+[project.scripts]
+evidenceai = "evidenceai.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q"
