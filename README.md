@@ -4,7 +4,7 @@ EvidenceAI is claim-centric evidence infrastructure. A finding is a claim with a
 
 The atomic unit is the claim: who asserted what, when, with what hedging, and whether separate sources agree. Documents, entities, and passages are supporting structure.
 
-This repository is version **0.1.0**. It is the Gate 1 library for one flagship slice: synthetic clinical trial documents. Scores on that slice are **not yet measured**.
+This repository is version **0.1.0**. It is the Gate 1 library for one flagship slice: synthetic clinical trial documents. The fixture diagnostic is the logged run in `eval/logs/gate1.json`. That log is a census of EB-Synth v0, not a generalization claim.
 
 ## Status
 
@@ -23,10 +23,14 @@ Present as of the pipeline commit:
 - `evidenceai.cli harness` scores that database and writes `eval/logs/gate1.json`. The numbers in that file are the run. This README does not copy them.
 - Tests in `tests/` cover unit normalization, the quotation check, quarantine, exact-byte duplicates, unsupported language, the 50-document slice, idempotent replay, and assertion-time filtering.
 
+Present as of the read-interface commit:
+
+- A loopback HTTP API. `python -m evidenceai serve` binds `127.0.0.1:8000` and refuses other hosts unless `--allow-remote` is set. There is still no authentication.
+- A React interface in `frontend/` with document span highlights, numeric triage, investigate, and the fixture diagnostic.
+- GitHub Actions workflow `.github/workflows/ci.yml` runs pytest and the frontend build.
+
 Later Gate 1 work, absent from this commit:
 
-- The HTTP service, the interface, and CI.
-- `make serve`, `make ui`, and `make ci` name those entrypoints. They fail until the server, the frontend, and the workflow exist.
 - Research charter, architecture decision records, and the semantics document.
 - PDF, OCR, learned extractors, entity-resolution models, and any non-English corpus.
 
@@ -45,7 +49,7 @@ Every generated document is labeled synthetic. Compounds are named `ZQ-17` onwar
 | Documents per run of the generator | 50 |
 | Registered seed | `20261126` |
 | Schema | `ceg-0.1.0` |
-| Headline metric (pre-registered, not yet measured) | false-conflict rate |
+| Headline metric | false-conflict rate, logged in `eval/logs/gate1.json` |
 | Ratio rounding tolerance | `0.005` absolute |
 | Percent rounding tolerance | `0.05` absolute |
 | Counts | exact after scale normalization |
@@ -61,6 +65,8 @@ domain-packs/clinical/pack.json          ontology, predicates, expected slots
 eval/preregistration_ebsynth_v0.json     authoritative numeric pre-registration
 schemas/sql/001_init.sql                 event log and projections
 src/evidenceai/                          library
+frontend/                                read interface
+.github/workflows/ci.yml                 pytest and the frontend build
 ```
 
 | Module | Role |
@@ -74,6 +80,7 @@ src/evidenceai/                          library
 | `verify.py` | Quotation check |
 | `confidence.py` | Composition of calibrated components; nulls stay null |
 | `store.py` | Append-only events and rebuildable projections |
+| `api.py` | Read-only HTTP API over the projection |
 
 Objects are inserted. A replacement document version is a new row plus a supersession event. Confidence fields stay null until a calibration run exists. Null is not stored as zero.
 
@@ -99,17 +106,23 @@ That prints `0.1.0`.
 Run the slice and the fixture diagnostic:
 
 ```bash
-python -m evidenceai.cli slice --out data/slice
-python -m evidenceai.cli harness --db data/slice/evidence.db --out eval/logs/gate1.json
+python -m evidenceai slice --out data/slice
+python -m evidenceai harness --db data/slice/evidence.db --out eval/logs/gate1.json
+python -m evidenceai serve --db data/slice/evidence.db
 ```
 
-`make test` lints and runs pytest. `make slice` and `make harness` are the same two commands. `data/` is gitignored. The harness JSON is the logged result for that working tree.
+In another shell, from `frontend/`:
+
+```bash
+npm install
+npm run dev
+```
+
+The dev server is `http://127.0.0.1:5173` and proxies `/api` to the loopback API. `make test` lints and runs pytest. `data/` is gitignored. The harness JSON is the logged result for that working tree.
 
 ## Models and deployment
 
-This commit makes no network call and loads no weights. Extraction is the sentence-frame matcher. An open-weights or API model gateway is future work. The intended Gate 1 process bind is loopback only; that server is not in this commit.
-
-There is no authentication layer here. Do not expose a later server beyond localhost until that layer exists.
+Extraction is the sentence-frame matcher. An open-weights or API model gateway is future work. The read API binds to loopback. It has no authentication, so leave `--allow-remote` unset.
 
 ## License
 
